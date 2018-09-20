@@ -1,54 +1,87 @@
-/**
- * Weather
- */
-
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import PropTypes from 'prop-types';
 
-const Weather = () => {
+const weatherIcon = {
+    'clear-day': {
+        icon: 'ios-sunny'
+    },
+    'clear-night': {
+        icon: 'ios-moon'
+    },
+    'rain': {
+        icon: 'ios-rainy'
+    },
+    'snow': {
+        icon: 'ios-snow'
+    },
+    'cloudy': {
+        icon: 'ios-cloudy'
+    },
+    'partly-cloudy-day': {
+        icon: 'ios-partly-sunny'
+    },
+    'partly-cloudy-night': {
+        icon: 'ios-cloudy-night'
+    },
+    'undefined': {
+        icon: 'ios-help'
+    }
+};
+
+const Weather = ({ weather = "Sunny", temperature = 89, iconName }) => {
+
+    if (typeof weatherIcon[iconName] === 'undefined') {
+        iconName = 'undefined';
+    }
+
     return (
         <View style={styles.weatherContainer}>
             <View style={styles.headerContainer}>
-                <Icon name="ios-sunny" size={45} color="#fff" />
-                <Text style={styles.tempText}>Temperature˚</Text>
+                <Icon name={weatherIcon[iconName].icon} size={90} color={'#000'} />
+                <Text style={styles.temperatureText}>
+                    {temperature}˚
+                </Text>
             </View>
             <View style={styles.bodyContainer}>
-                <Text style={styles.title}>So Sunny</Text>
-                <Text styles={styles.subtitle}>It hurts my eyes!</Text>
+                <Text style={styles.weatherText}>
+                    {weather}
+                </Text>
             </View>
         </View>
     );
 };
 
+Weather.propTypes = {
+  temperature: PropTypes.number.isRequired,
+  weather: PropTypes.string
+};
+
 const styles = StyleSheet.create({
     weatherContainer: {
         flex: 1,
-        backgroundColor: '#f7b733'
+        backgroundColor: '#eee'
     },
     headerContainer: {
         flex: 1,
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'space-around'
     },
-    tempText: {
-        fontSize: 48,
-        color: '#fff'
+    temperatureText: {
+        fontSize: 80,
+        color: '#000'
     },
     bodyContainer: {
-        flex: 2,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-end',
-        paddingLeft: 25,
-        marginBottom: 40
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        textAlign: 'center'
     },
-    title: {
-        fontSize: 48,
-        color: '#fff'
-    },
-    subtitle: {
-        fontSize: 24,
-        color: '#fff'
+    weatherText: {
+        fontSize: 32,
+        color: '#000'
     }
 });
 

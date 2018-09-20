@@ -76,8 +76,7 @@ const styles = StyleSheet.create({
     bodyContainer: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'space-around',
-        textAlign: 'center'
+        justifyContent: 'space-around'
     },
     weatherText: {
         fontSize: 32,

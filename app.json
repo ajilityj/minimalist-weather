@@ -1,7 +1,9 @@
 {
-  "name": "MinimalistWeather",
-  "displayName": "MinimalistWeather",
   "expo": {
+    "name": "Minimalist Weather",
+    "slug": "minimalist-weather",
+    "description": "View the current weather in your location.",
+    "githubUrl": "https://github.com/ajilityj/MinimalistWeather",
     "sdkVersion": "27.0.0"
   }
 }

@@ -3,10 +3,11 @@
  * Kudos to https://bit.ly/2vAmRbh
  */
 
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { API_KEY } from './utils/DarkSkyAPI';
-import Weather from './components/Weather';
+import React, { Component } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
+import { API_KEY } from "./utils/DarkSkyAPI";
+import Weather from "./components/Weather";
+import styles from "./styles/app";
 
 export default class App extends Component {
   state = {
@@ -24,45 +25,52 @@ export default class App extends Component {
       },
       error => {
         this.setState({
-          error: 'Error Getting Weather Conditions'
+          error: "Error fetching weather"
         });
       }
     );
   }
 
-  fetchWeather(latitude = 25, longitude = 25) {
-    fetch (
+  fetchWeather(latitude, longitude) {
+    fetch(
       `https://api.darksky.net/forecast/${API_KEY}/${latitude},${longitude}`
     )
       .then(res => res.json())
       .then(json => {
-        console.log(json);
-        this.setState({
-          temperature: Math.round(json.currently.temperature),
-          weather: json.minutely ? json.minutely.summary 
-            : json.currently.summary,
-          iconName: json.currently.icon,
-          isLoading: false
-        })
+        // prevent flickering on fast connections
+        setTimeout(() => {
+          this.setState({
+            temperature: Math.round(json.currently.temperature),
+            weather: json.minutely
+              ? json.minutely.summary
+              : json.currently.summary,
+            iconName: json.currently.icon,
+            isLoading: false
+          });
+        }, 333);
       });
   }
 
   render() {
     const { isLoading, weather, temperature, iconName } = this.state;
-    
+
     return (
       <View style={styles.container}>
-        {isLoading ? <Text>Fetching the Weather</Text> 
-          : <Weather weather={weather} temperature={temperature} iconName={iconName} />
-        } 
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>
+              Fetching your local weather...
+            </Text>
+            <ActivityIndicator size="large" color="#333" />
+          </View>
+        ) : (
+          <Weather
+            weather={weather}
+            temperature={temperature}
+            iconName={iconName}
+          />
+        )}
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff'
-  }
-});

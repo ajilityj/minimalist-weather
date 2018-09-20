@@ -1,4 +1,7 @@
 {
   "name": "MinimalistWeather",
-  "displayName": "MinimalistWeather"
+  "displayName": "MinimalistWeather",
+  "expo": {
+    "sdkVersion": "27.0.0"
+  }
 }

@@ -4,58 +4,109 @@
  */
 
 import React, { Component } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View
+} from "react-native";
 import { API_KEY } from "./utils/DarkSkyAPI";
 import Weather from "./components/Weather";
+import Icon from "react-native-vector-icons/Ionicons";
 import styles from "./styles/app";
 
 export default class App extends Component {
   state = {
+    refreshing: false,
     isLoading: true,
     temperature: 0,
-    weather: null,
+    weatherDescription: "",
     iconName: null,
-    error: null
+    currentTime: null,
+    errorMessage: ""
   };
 
   componentDidMount() {
+    this.getLocation();
+  }
+
+  getLocation() {
     navigator.geolocation.getCurrentPosition(
       position => {
-        this.fetchWeather(position.coords.latitude, position.coords.longitude);
+        this.getWeather(position.coords.latitude, position.coords.longitude);
       },
       error => {
         this.setState({
-          error: "Error fetching weather"
+          isLoading: false,
+          refreshing: false,
+          errorMessage: "Error getting location."
         });
       }
     );
   }
 
-  fetchWeather(latitude, longitude) {
+  getWeather(latitude, longitude) {
     fetch(
       `https://api.darksky.net/forecast/${API_KEY}/${latitude},${longitude}`
     )
-      .then(res => res.json())
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error("Error getting weather.");
+      })
       .then(json => {
         // prevent flickering on fast connections
         setTimeout(() => {
           this.setState({
             temperature: Math.round(json.currently.temperature),
-            weather: json.minutely
+            weatherDescription: json.minutely
               ? json.minutely.summary
               : json.currently.summary,
             iconName: json.currently.icon,
-            isLoading: false
+            currentTime: new Date().toLocaleString(),
+            isLoading: false,
+            refreshing: false
           });
         }, 333);
+      })
+      .catch(error => {
+        this.setState({
+          isLoading: false,
+          refreshing: false,
+          errorMessage: error.message
+        });
       });
   }
 
+  refreshControl() {
+    return (
+      <RefreshControl
+        refreshing={this.state.refreshing}
+        onRefresh={() => {
+          this.setState({ refreshing: true });
+          this.getLocation();
+        }}
+      />
+    );
+  }
+
   render() {
-    const { isLoading, weather, temperature, iconName } = this.state;
+    const {
+      currentTime,
+      errorMessage,
+      iconName,
+      isLoading,
+      temperature,
+      weatherDescription
+    } = this.state;
 
     return (
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={this.refreshControl()}
+      >
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>
@@ -64,13 +115,24 @@ export default class App extends Component {
             <ActivityIndicator size="large" color="#333" />
           </View>
         ) : (
-          <Weather
-            weather={weather}
-            temperature={temperature}
-            iconName={iconName}
-          />
+          <View style={styles.loadedContainer}>
+            {errorMessage.length > 0 ? (
+              <Text style={styles.errorMessage}>
+                <Icon name={"ios-alert"} size={23} /> {errorMessage}
+              </Text>
+            ) : (
+              <View>
+                <Weather
+                  weatherDescription={weatherDescription}
+                  temperature={temperature}
+                  iconName={iconName}
+                />
+                <Text style={styles.timeText}>Last updated: {currentTime}</Text>
+              </View>
+            )}
+          </View>
         )}
-      </View>
+      </ScrollView>
     );
   }
 }

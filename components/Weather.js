@@ -1,32 +1,70 @@
-import React from "react";
-import { Text, View } from "react-native";
-import PropTypes from "prop-types";
-import Icon from "react-native-vector-icons/Ionicons";
-import WeatherIcons from "../utils/WeatherIcons";
-import styles from "../styles/weather";
+import React, { Component } from 'react';
+import { FlatList, List, ListItem, Text, View } from 'react-native';
+import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/Ionicons';
+import WeatherIcons from '../utils/WeatherIcons';
+import styles from '../styles/weather';
 
-const Weather = ({ iconName, temperature, weatherDescription }) => {
-  if (typeof WeatherIcons[iconName] === "undefined") {
-    iconName = "undefined";
+class Weather extends Component {
+  state = {
+    alerts: this.props.weather.alerts ? this.props.weather.alerts : null,
+    description: this.props.weather.minutely
+      ? this.props.weather.minutely.summary
+      : this.props.weather.currently.summary,
+    icon: this.getWeatherIcon(this.props.weather.currently.icon),
+    temperature: Math.round(this.props.weather.currently.temperature)
+  };
+
+  getWeatherIcon(icon) {
+    if (typeof WeatherIcons[icon] !== 'object') {
+      icon = 'undefined';
+    }
+    return icon;
   }
 
-  return (
-    <View style={styles.weatherContainer}>
-      <View style={styles.temperatureContainer}>
-        <Icon name={WeatherIcons[iconName].icon} size={90} color={"#000"} />
-        <Text style={styles.temperatureText}>{temperature}˚</Text>
+  render() {
+    const { alerts, description, icon, temperature } = this.state;
+
+    return (
+      <View style={styles.weatherContainer}>
+        
+        {alerts ? (
+          <View style={styles.alertsContainer}>
+            <FlatList
+              data={alerts}
+              renderItem={({ item }) => {
+                return (
+                  <View style={styles.alertContainer}>
+                    <Text style={styles.alertText}>
+                      {item.severity.toUpperCase()}: {item.title}
+                    </Text>
+                    <Text style={styles.alertText}>{item.regions}</Text>
+                    {/* <Text>{item.description}</Text> */}
+                    {/* <Text>{item.expires}</Text> */}
+                  </View>
+                );
+              }}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </View>
+        ) : (
+          console.log('no weather alerts exist')
+        )}
+
+        <View style={styles.temperatureContainer}>
+          <Icon name={WeatherIcons[icon].icon} size={90} color={'#000'} />
+          <Text style={styles.temperatureText}>{temperature}˚</Text>
+        </View>
+        <View style={styles.weatherDescriptionContainer}>
+          <Text style={styles.weatherDescription}>{description}</Text>
+        </View>
       </View>
-      <View style={styles.weatherDescriptionContainer}>
-        <Text style={styles.weatherDescription}>{weatherDescription}</Text>
-      </View>
-    </View>
-  );
-};
+    );
+  }
+}
 
 Weather.propTypes = {
-  iconName: PropTypes.string,
-  temperature: PropTypes.number.isRequired,
-  weatherDescription: PropTypes.string.isRequired
+  weather: PropTypes.object.isRequired
 };
 
 export default Weather;

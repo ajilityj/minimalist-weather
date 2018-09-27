@@ -1,25 +1,37 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   weatherContainer: {
     flex: 1
   },
   temperatureContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     flex: 2,
-    flexDirection: "row",
-    justifyContent: "space-around"
+    flexDirection: 'row',
+    justifyContent: 'space-around'
   },
   temperatureText: {
-    color: "#111",
+    color: '#111',
     fontSize: 80
   },
   weatherDescriptionContainer: {
-    alignItems: "center",
     flex: 1
   },
   weatherDescription: {
-    color: "#111",
-    fontSize: 32
+    color: '#111',
+    fontSize: 32,
+    textAlign: 'center'
+  },
+  alertsContainer: {
+    borderColor: 'red',
+    borderWidth: 2,
+    margin: 5
+  },
+  alertContainer: {
+    flex: 1,
+    padding: 10
+  },
+  alertText: {
+    color: 'red'
   }
 });

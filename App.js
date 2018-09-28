@@ -35,8 +35,8 @@ export default class App extends Component {
   getLocation() {
     navigator.geolocation.getCurrentPosition(
       position => {
-        const latitude = 41.3082; //position.coords.latitude;
-        const longitude = -72.9251; //position.coords.longitude;
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
 
         Expo.Location.reverseGeocodeAsync({
           latitude: latitude,

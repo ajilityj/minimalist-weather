@@ -2,13 +2,16 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: '#ddd',
     flex: 1
   },
   loadingContainer: {
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center'
+  },
+  loadingText: {
+    fontSize: 30,
+    marginBottom: 25
   },
   loadedContainer: {
     alignItems: 'center',
@@ -17,13 +20,9 @@ export default StyleSheet.create({
     marginBottom: 10,
     marginTop: 24
   },
-  loadingText: {
-    fontSize: 25,
-    marginBottom: 25
-  },
   timeText: {
     color: '#aaa',
-    fontSize: 16,
+    fontSize: 15,
     textAlign: 'center'
   },
   errorMessage: {

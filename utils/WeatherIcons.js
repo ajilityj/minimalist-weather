@@ -1,26 +1,9 @@
 export default {
-    'clear-day': {
-        icon: 'ios-sunny'
-    },
-    'clear-night': {
-        icon: 'ios-moon'
-    },
-    'rain': {
-        icon: 'ios-rainy'
-    },
-    'snow': {
-        icon: 'ios-snow'
-    },
-    'cloudy': {
-        icon: 'ios-cloudy'
-    },
-    'partly-cloudy-day': {
-        icon: 'ios-partly-sunny'
-    },
-    'partly-cloudy-night': {
-        icon: 'ios-cloudy-night'
-    },
-    'undefined': {
-        icon: 'ios-help'
-    }
+  'clear-day': 'ios-sunny',
+  'clear-night': 'ios-moon',
+  rain: 'ios-rainy',
+  snow: 'ios-snow',
+  cloudy: 'ios-cloudy',
+  'partly-cloudy-day': 'ios-partly-sunny',
+  'partly-cloudy-night': 'ios-cloudy-night'
 };

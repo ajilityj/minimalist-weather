@@ -8,26 +8,17 @@ import styles from '../styles/weather';
 class Weather extends Component {
   state = {
     alerts: this.props.weather.alerts ? this.props.weather.alerts : null,
-    description: this.props.weather.minutely
-      ? this.props.weather.minutely.summary
-      : this.props.weather.currently.summary,
-    icon: this.getWeatherIcon(this.props.weather.currently.icon),
+    description: this.props.weather.currently.summary,
+    icon: this.props.weather.currently.icon,
+    location: this.props.location,
     temperature: Math.round(this.props.weather.currently.temperature)
   };
 
-  getWeatherIcon(icon) {
-    if (typeof WeatherIcons[icon] !== 'object') {
-      icon = 'undefined';
-    }
-    return icon;
-  }
-
   render() {
-    const { alerts, description, icon, temperature } = this.state;
+    const { alerts, location, description, icon, temperature } = this.state;
 
     return (
       <View style={styles.weatherContainer}>
-        
         {alerts ? (
           <View style={styles.alertsContainer}>
             <FlatList
@@ -36,9 +27,8 @@ class Weather extends Component {
                 return (
                   <View style={styles.alertContainer}>
                     <Text style={styles.alertText}>
-                      {item.severity.toUpperCase()}: {item.title}
+                      {item.title.toUpperCase()}
                     </Text>
-                    <Text style={styles.alertText}>{item.regions}</Text>
                     {/* <Text>{item.description}</Text> */}
                     {/* <Text>{item.expires}</Text> */}
                   </View>
@@ -51,13 +41,21 @@ class Weather extends Component {
           console.log('no weather alerts exist')
         )}
 
-        <View style={styles.temperatureContainer}>
-          <Icon name={WeatherIcons[icon].icon} size={90} color={'#000'} />
-          <Text style={styles.temperatureText}>{temperature}˚</Text>
+        <View style={styles.currentWeatherContainer}>
+          {WeatherIcons[icon] ? (
+            <Icon name={WeatherIcons[icon]} size={125} color={'#000'} />
+          ) : (
+            console.log('no usable icon exists')
+          )}
+          <Text style={styles.descriptionText}>
+            {description.toUpperCase()}
+          </Text>
+          <Text style={styles.locationText}>{location.toUpperCase()}</Text>
         </View>
-        <View style={styles.weatherDescriptionContainer}>
-          <Text style={styles.weatherDescription}>{description}</Text>
-        </View>
+        <Text style={styles.temperatureText}>
+          {temperature}
+          <Text style={{ fontSize: 115 }}>˚</Text>
+        </Text>
       </View>
     );
   }

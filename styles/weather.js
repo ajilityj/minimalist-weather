@@ -4,27 +4,29 @@ export default StyleSheet.create({
   weatherContainer: {
     flex: 1
   },
-  temperatureContainer: {
+  currentWeatherContainer: {
     alignItems: 'center',
-    flex: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-around'
+    flex: 1,
+    justifyContent: 'center'
+  },
+  descriptionText: {
+    color: '#000',
+    fontSize: 50
+  },
+  locationText: {
+    color: '#7e7e7e',
+    fontSize: 20
   },
   temperatureText: {
-    color: '#111',
-    fontSize: 80
-  },
-  weatherDescriptionContainer: {
-    flex: 1
-  },
-  weatherDescription: {
-    color: '#111',
-    fontSize: 32,
+    color: '#000',
+    flex: 1,
+    fontSize: 125,
     textAlign: 'center'
   },
   alertsContainer: {
     borderColor: 'red',
     borderWidth: 2,
+    display: 'none', // todo
     margin: 5
   },
   alertContainer: {
@@ -32,6 +34,7 @@ export default StyleSheet.create({
     padding: 10
   },
   alertText: {
-    color: 'red'
+    color: 'red',
+    fontWeight: 'bold'
   }
 });

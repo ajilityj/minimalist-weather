@@ -11,13 +11,16 @@ import {
   Text,
   View
 } from 'react-native';
-import { API_KEY } from './utils/DarkSkyAPI';
-import Weather from './components/Weather';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Constants, Location, Permissions } from 'expo';
+import { API_KEY } from './utils/DarkSkyAPI';
+import StateAbbreviations from './utils/StateAbbreviations';
+import Weather from './components/Weather';
 import styles from './styles/app';
 
 export default class App extends Component {
   state = {
+    currentLocation: null,
     currentTime: null,
     errorMessage: '',
     isLoading: true,
@@ -32,7 +35,30 @@ export default class App extends Component {
   getLocation() {
     navigator.geolocation.getCurrentPosition(
       position => {
-        this.getWeather(position.coords.latitude, position.coords.longitude);
+        const latitude = 41.3082; //position.coords.latitude;
+        const longitude = -72.9251; //position.coords.longitude;
+
+        Expo.Location.reverseGeocodeAsync({
+          latitude: latitude,
+          longitude: longitude
+        })
+          .then(address => {
+            // address: [{city, street, region, postalCode, country, name}]
+            address = address[0];
+
+            const location = !address.city
+              ? `${address.region}, ${address.country}`
+              : address.country === 'United States' || 'Canada'
+                ? `${address.city}, ${this.getStateAbbreviation(
+                    address.region
+                  )}`
+                : `${address.city}, ${address.region}`;
+
+            this.getWeather(latitude, longitude, location);
+          })
+          .catch(() => {
+            this.getWeather(latitude, longitude, null);
+          });
       },
       error => {
         this.setState({
@@ -44,7 +70,11 @@ export default class App extends Component {
     );
   }
 
-  getWeather(latitude, longitude) {
+  getStateAbbreviation(stateName) {
+    return StateAbbreviations[stateName];
+  }
+
+  getWeather(latitude, longitude, location) {
     fetch(
       `https://api.darksky.net/forecast/${API_KEY}/${latitude},${longitude}`
     )
@@ -54,13 +84,14 @@ export default class App extends Component {
         }
         throw new Error('Error getting weather.');
       })
-      .then(json => {
-        console.log(json);
+      .then(weather => {
+        console.log(weather);
         // prevent flickering on fast connections
         setTimeout(() => {
           this.setState({
+            currentLocation: location,
             currentTime: new Date().toLocaleString(),
-            weather: json,
+            weather: weather,
             isLoading: false,
             refreshing: false
           });
@@ -91,7 +122,13 @@ export default class App extends Component {
   }
 
   render() {
-    const { currentTime, errorMessage, isLoading, weather } = this.state;
+    const {
+      currentLocation,
+      currentTime,
+      errorMessage,
+      isLoading,
+      weather
+    } = this.state;
 
     return (
       <ScrollView
@@ -113,7 +150,7 @@ export default class App extends Component {
               </Text>
             ) : (
               <View>
-                <Weather weather={weather} />
+                <Weather weather={weather} location={currentLocation} />
                 <Text style={styles.timeText}>Last updated: {currentTime}</Text>
               </View>
             )}

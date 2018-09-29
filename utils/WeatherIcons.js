@@ -1,9 +1,15 @@
 export default {
-  'clear-day': 'ios-sunny',
-  'clear-night': 'ios-moon',
-  rain: 'ios-rainy',
-  snow: 'ios-snow',
-  cloudy: 'ios-cloudy',
-  'partly-cloudy-day': 'ios-partly-sunny',
-  'partly-cloudy-night': 'ios-cloudy-night'
+  'clear-day': 'sun',
+  'clear-night': 'moon',
+  rain: 'cloud-rain',
+  snow: 'cloud-snow',
+  cloudy: 'cloud',
+  'partly-cloudy-day': 'cloud-sun',
+  'partly-cloudy-night': 'cloud-moon',
+  sleet: 'cloud-drizzle',
+  wind: 'wind',
+  fog: 'cloud-fog',
+  hail: 'cloud-hail',
+  thunderstorm: 'cloud-lightning',
+  tornado: 'tornado'
 };

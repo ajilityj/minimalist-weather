@@ -46,14 +46,21 @@ export default class App extends Component {
             // address: [{city, street, region, postalCode, country, name}]
             address = address[0];
 
-            const location = !address.city
-              ? `${address.region}, ${address.country}`
-              : address.country === 'United States' || 'Canada'
-                ? `${address.city}, ${this.getStateAbbreviation(
-                    address.region
-                  )}`
-                : `${address.city}, ${address.region}`;
+            let location = null;
 
+            if (!address.city) {
+              if (address.region) {
+                location = `${address.region}, ${address.country}`;
+              } else if (address.country) {
+                location = address.country;
+              }
+            } else {
+              if (address.country === 'United States' || address.country === 'Canada') {
+                location = `${address.city}, ${this.getStateAbbreviation(address.region)}`
+              } else {
+                location = `${address.city}, ${address.region}`;
+              }
+            }
             this.getWeather(latitude, longitude, location);
           })
           .catch(() => {
@@ -86,7 +93,6 @@ export default class App extends Component {
       })
       .then(weather => {
         console.log(weather);
-        // prevent flickering on fast connections
         setTimeout(() => {
           this.setState({
             currentLocation: location,
@@ -138,7 +144,7 @@ export default class App extends Component {
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>
-              Fetching your local weather...
+              Fetching local weather...
             </Text>
             <ActivityIndicator size="large" color="#333" />
           </View>
